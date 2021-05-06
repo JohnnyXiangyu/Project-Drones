@@ -4,7 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 
 [Serializable]
-public struct ChaseTag : IComponentData
+public struct ProtoChaseTag : IComponentData
 {
     // Add fields to your component here. Remember that:
     //

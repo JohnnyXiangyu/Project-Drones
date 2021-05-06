@@ -4,7 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 
 [Serializable]
-public struct DistributiveTarget : IComponentData
+public struct ProtoChaseTarget : IComponentData
 {
     // Add fields to your component here. Remember that:
     //
