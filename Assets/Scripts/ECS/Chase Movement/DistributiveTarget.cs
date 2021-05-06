@@ -3,9 +3,8 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
-[GenerateAuthoringComponent]
 [Serializable]
-public struct FlockHub : IComponentData
+public struct DistributiveTarget : IComponentData
 {
     // Add fields to your component here. Remember that:
     //
@@ -21,6 +20,5 @@ public struct FlockHub : IComponentData
     //   for runtime use here. Authoring Components will be used for 
     //   authoring the data in the Editor.
 
-    public float sideVelocity;
-    public float proximity;
+    public int tag;
 }

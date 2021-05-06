@@ -10,12 +10,12 @@
 //{
 //    protected override void OnUpdate()
 //    {
-//        var friends = GetEntityQuery(ComponentType.ReadOnly<Translation>(), ComponentType.ReadOnly<FlockHub>());
+//        var friends = GetEntityQuery(ComponentType.ReadOnly<Translation>(), ComponentType.ReadOnly<AvoidanceController>());
 //        var positions = friends.ToComponentDataArray<Translation>(Allocator.TempJob);
 
 //        float timeDelta = Time.DeltaTime;
 
-//        Entities.ForEach((/*ref PhysicsVelocity velocity, */ref Translation translation, in Rotation rotation, in FlockHub flock, in DroneNavigator steer) => {
+//        Entities.ForEach((/*ref PhysicsVelocity velocity, */ref Translation translation, in Rotation rotation, in AvoidanceController flock, in DroneNavigator steer) => {
 //            float3 finalDirection = float3.zero;
             
 //            // TODO: engine velocity

@@ -13,7 +13,7 @@
 
 //        float timeDelta = Time.DeltaTime;
 
-//        Entities.WithNone<PhysicsVelocity>().ForEach((ref Translation translation, in Rotation rotation, in FlockHub flock) => {
+//        Entities.WithNone<PhysicsVelocity>().ForEach((ref Translation translation, in Rotation rotation, in AvoidanceController flock) => {
 //            // TODO: add flocking algorithm
 //            // iteration1: my fake flocking algorithm
 //            float3 finalAdjustment = float3.zero;

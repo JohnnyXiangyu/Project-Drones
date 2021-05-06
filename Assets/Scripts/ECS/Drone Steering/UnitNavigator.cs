@@ -5,7 +5,7 @@ using Unity.Mathematics;
 
 [GenerateAuthoringComponent]
 [Serializable]
-public struct DroneNavigator : IComponentData
+public struct UnitNavigator : IComponentData
 {
     // Add fields to your component here. Remember that:
     //
@@ -22,8 +22,14 @@ public struct DroneNavigator : IComponentData
     //   authoring the data in the Editor.
 
     public float3 target;
+    public float tag;
+    
     public float angularVelocity;
     public float linearVelocity;
-    public float tag;
+    
     public bool activate;
+
+    public float priorityRot;
+    public float3 priorityAxis;
+    public int times;
 }

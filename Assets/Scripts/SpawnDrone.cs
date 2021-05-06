@@ -5,23 +5,38 @@ using UnityEngine;
 public class SpawnDrone : MonoBehaviour
 {
     [SerializeField] GameObject dronePrefab;
-
+    [SerializeField] int droneTag;
     [SerializeField] int times;
+    [SerializeField] bool unlimited;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    public static SpawnDrone instance = null;
+
+    public bool newDroneThisFrame = false;
+    public int newDroneTag = -1;
+
+    private void Awake() {
+        if (instance != null) {
+            instance = this;
+        }
+        else if (instance != this) {
+            Destroy(gameObject);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (times <= 0) {
+        newDroneThisFrame = false;
+        
+        if (times <= 0 && !unlimited) {
             return;
         }
 
-        Instantiate(dronePrefab, new Vector3(Random.Range(-50, 50), 0, Random.Range(-50, 50)), Quaternion.identity);
-        times--;
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            Instantiate(dronePrefab, new Vector3(Random.Range(5, 20), 0, Random.Range(5, 20)), Quaternion.identity);
+            times--;
+            newDroneThisFrame = true;
+            newDroneTag = droneTag;
+        }
     }
 }

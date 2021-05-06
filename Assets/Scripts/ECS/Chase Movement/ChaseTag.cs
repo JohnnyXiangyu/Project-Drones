@@ -3,9 +3,8 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
-[GenerateAuthoringComponent]
 [Serializable]
-public struct TargetTag : IComponentData
+public struct ChaseTag : IComponentData
 {
     // Add fields to your component here. Remember that:
     //
@@ -21,5 +20,6 @@ public struct TargetTag : IComponentData
     //   for runtime use here. Authoring Components will be used for 
     //   authoring the data in the Editor.
 
-    public float tag;
+    public int id;
+
 }
