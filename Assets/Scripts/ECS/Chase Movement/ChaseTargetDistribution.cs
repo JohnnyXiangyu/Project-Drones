@@ -23,25 +23,14 @@ public class ChaseTargetDistribution : SystemBase
         // TODO: remember to extend the above code to work with multiple tags
         
         // find all drones
-        EntityQuery targets = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<UnitNavigator>());
+        EntityQuery drones = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<UnitNavigator>(), ComponentType.ReadOnly<ChaseTag>());
+        //var droneEntities = drones.ToEntityArray(Allocator.TempJob);
+        //var positions = drones.ToComponentDataArray<Translation>(Allocator.TempJob);
+        //var tags = drones.ToComponentDataArray<ChaseTag>(Allocator.TempJob);
 
-        var positions = targets.ToComponentDataArray<Translation>(Allocator.TempJob);
-        var navitagors = targets.ToComponentDataArray<UnitNavigator>(Allocator.TempJob);
-        
-        //Entities.ForEach((ref UnitNavigator steer) => {
-        //    // skip unchanged tags
+        // loop through targets
+        Entities.ForEach((ref DistributiveTarget target, in Translation translation) => {
             
-        //    // TODO: traverse all objects, calculate the count of objects needing positioning
-        //    // TODO: setup a function for repositioning
-        //    // TODO: for each index in the object, set a new 
-
-        //    for (int i = 0; i < positions.Length; i++) {
-        //        if (steer.tag == tags[i].tag) {
-        //            steer.target = positions[i].Value;
-        //            steer.activate = true;
-        //            break;
-        //        }
-        //    }
-        //}).WithDisposeOnCompletion(positions).WithDisposeOnCompletion(tags).Schedule();
+        })/*.WithDisposeOnCompletion(droneEntities).WithDisposeOnCompletion(positions).WithDisposeOnCompletion(tags)*/.Schedule();
     }
 }
