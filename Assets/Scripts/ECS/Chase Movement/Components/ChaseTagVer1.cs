@@ -22,5 +22,8 @@ public struct ChaseTagVer1 : IComponentData
     /// </summary>
     public bool initialized;
 
+    /// <summary>
+    /// the relative position against the thing it's chasing
+    /// </summary>
     public float3 relativePosition;
 }

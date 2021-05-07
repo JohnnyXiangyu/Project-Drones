@@ -43,13 +43,14 @@ public class SteeringWithoutCollide : SystemBase {
             finalAxis.z = tempAxis.z;
             rotation.Value = math.mul(rotation.Value, quaternion.AxisAngle(finalAxis, finalAngle));
 
-            // goal test
+            // linear movement
             if (math.distance(translation.Value, steer.target) > 1) {
                 float moveDistance = timeDelta * steer.linearVelocity;
 
-                //if (finalAngle != 0) {
-                //    moveDistance /= 2;
-                //}
+                // speed adjustment
+                if (finalAngle > timeDelta * steer.angularVelocity) {
+                    moveDistance /= 2;
+                }
 
                 translation.Value += math.mul(rotation.Value, new float3(0, 0, moveDistance));
             }

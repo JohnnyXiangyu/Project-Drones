@@ -75,15 +75,15 @@ public class ChaseSystemVer1 : SystemBase
                     if (angle < math.PI / 4) {
                         float3 tempAxis = math.cross(deltaDir, target.direction);
                         // new assemble direction is the closer 90 deg from current
-                        target.direction = math.mul(quaternion.AxisAngle(tempAxis.Equals(float3.zero)? (new float3(0, 1, 0)) : math.normalize(tempAxis), math.PI/2), math.normalize(deltaDir));
+                        target.direction = math.normalize(-deltaDir);
+                        //target.direction = math.mul(quaternion.AxisAngle(tempAxis.Equals(float3.zero)? (new float3(0, 1, 0)) : math.normalize(tempAxis), math.PI/2), math.normalize(deltaDir));
                     }
                 }
 
                 // updated area size
-                // TODO: change the angle here
                 float mult = math.sqrt(count);
-                target.halfAngle = 1.0f / 20 * mult * 2;
-                target.thickness = 1f * mult / 2;
+                target.halfAngle = math.min(2 * math.PI / 120 * count / 4, math.PI * 2);
+                target.thickness = math.min(1f + mult/5, 7);
             }
         }).WithDisposeOnCompletion(droneTags).WithDisposeOnCompletion(dronePoses).Schedule();
 
@@ -95,19 +95,20 @@ public class ChaseSystemVer1 : SystemBase
         Random random = new Random((uint)(Time.ElapsedTime * 1000) + 1);
 
         
-
-        Entities.ForEach((ref DummySteer steer, in ChaseTagVer1 task) => {
+        // TODO: change it to using relative positions
+        Entities.ForEach((ref DummySteer steer, ref ChaseTagVer1 task) => {
             for (int i = 0; i < targetTags.Length; i++) {
                 // var target = targetTags[i];
 
                 // will only do it for the first target
                 if (targetTags[i].tag == task.id) {
                     if (targetTags[i].active == false) {
-                        steer.target = targetPoses[i].Value;
+                        // steer.target = targetPoses[i].Value;
+                        task.relativePosition = float3.zero;
                     }
                     else {
                         // in range test
-                        float3 relativePos = steer.target - targetPoses[i].Value;
+                        float3 relativePos = task.relativePosition;
                         float relativeAngle = math.acos(math.dot(math.normalize(relativePos), math.normalize(targetTags[i].direction)));
 
                         // if current point no longer in task range, find another random point
@@ -115,15 +116,23 @@ public class ChaseSystemVer1 : SystemBase
                             float angle = random.NextFloat(-targetTags[i].halfAngle, targetTags[i].halfAngle);
                             float thickness = random.NextFloat(0, targetTags[i].thickness);
 
-                            float3 newPosition = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), angle), targetTags[i].direction);
-                            newPosition = math.normalize(newPosition) * (20 - thickness) + targetPoses[i].Value;
-                            steer.target = newPosition;
+                            float3 newPosition = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), angle), math.normalize(targetTags[i].direction));
+                            newPosition = math.normalize(newPosition) * (20 - thickness);
+                            task.relativePosition = newPosition;
+
+                            //steer.target = newPosition;
 
                             steer.activate = true;
                         }
-                        break;
                     }
+
+                    // update actual target based on current relative position
+                    steer.target = targetPoses[i].Value + task.relativePosition;
+
+                    break;
                 }
+
+                
             }
         }).WithDisposeOnCompletion(targetTags).WithDisposeOnCompletion(targetPoses).Schedule();
     }
