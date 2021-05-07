@@ -36,16 +36,16 @@ public class KeyboardMovement : SystemBase {
 
         Entities.ForEach((ref Translation translation, in KeyboardRcver rcver) => {
             if (wDown) {
-                translation.Value += new float3(0, 0, timeDelta) * 100;
+                translation.Value += new float3(0, 0, timeDelta) * 8;
             }
             if (sDown) {
-                translation.Value += new float3(0, 0, -timeDelta) * 100;
+                translation.Value += new float3(0, 0, -timeDelta) * 8;
             }
             if (aDown) {
-                translation.Value += new float3(-timeDelta, 0, 0) * 100;
+                translation.Value += new float3(-timeDelta, 0, 0) * 8;
             }
             if (dDown) {
-                translation.Value += new float3(timeDelta, 0, 0) * 100;
+                translation.Value += new float3(timeDelta, 0, 0) * 8;
             }
         })./*WithDisposeOnCompletion(targetEntities).*/Schedule();
     }

@@ -15,7 +15,7 @@ public class SpawnDrone : MonoBehaviour
     public int newDroneTag = -1;
 
     private void Awake() {
-        if (instance != null) {
+        if (instance == null) {
             instance = this;
         }
         else if (instance != this) {
@@ -33,7 +33,7 @@ public class SpawnDrone : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.Space)) {
-            Instantiate(dronePrefab, new Vector3(Random.Range(5, 20), 0, Random.Range(5, 20)), Quaternion.identity);
+            Instantiate(dronePrefab, new Vector3(20, 0, 20), Quaternion.identity);
             times--;
             newDroneThisFrame = true;
             newDroneTag = droneTag;

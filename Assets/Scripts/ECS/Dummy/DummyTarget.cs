@@ -3,8 +3,9 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
+[GenerateAuthoringComponent]
 [Serializable]
-public struct ProtoChaseTarget : IComponentData
+public struct DummyTarget : IComponentData
 {
     // Add fields to your component here. Remember that:
     //
