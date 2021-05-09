@@ -61,7 +61,7 @@ public class SteeringSystem : SystemBase {
             rotation.Value = math.mul(rotation.Value, quaternion.AxisAngle(finalAxis, finalAngle));
 
             // goal test
-            if (math.distance(translation.Value, steer.target) < 10) return;
+            if (math.distance(translation.Value, steer.target) < 20) return;
 
             // updated direction
             float3 myForward3 = math.mul(rotation.Value, new float3(0, 0, 1));
@@ -90,10 +90,10 @@ public class SteeringSystem : SystemBase {
             float collisionDist = math.distance(collisionPos, translation.Value);
 
             // perform movement
-            //if (!isColliding || collisionDist > cd.concreteRadius + collisionCd.concreteRadius) {
-            translation.Value = newCoord;
-            steer.times = 0;
-            //}
+            if (!isColliding || collisionDist > cd.concreteRadius + collisionCd.concreteRadius) {
+                translation.Value = newCoord;
+                steer.times = 0;
+            }
 
             // register new direction adjustment
             if (isColliding && collisionDist <= cd.detectionRadius + collisionCd.concreteRadius && steer.priorityRot <= 0) {
@@ -111,42 +111,6 @@ public class SteeringSystem : SystemBase {
                     steer.times = 0;
                 }
             }
-
-            //if (true) {
-            //    //for (int i = 0; i < otherColliders.Length; i++) {
-            //    //    float2 otherCoord = new float2(otherUnits[i].Value.x, otherUnits[i].Value.z);
-            //    //    float2 diff = otherCoord - myCoord;
-            //    //    float distance = math.length(diff);
-
-            //    //    // if colliding in the front (direction to the target)
-            //    //    if (otherEntities[i] != e
-            //    //        && distance <= otherColliders[i].concreteRadius + cd.detectionRadius
-            //    //        && math.dot(diff, myForward2) > 0
-            //    //        && (closestDistance == -1 || closestDistance < distance)) {
-            //    //        closestOpponent = otherCoord;
-            //    //        closestDistance = distance;
-            //    //    }
-            //    //}
-
-            //    // rotate to avoid
-            //    if (closestDistance != -1) {
-            //        float2 diff = closestOpponent - myForward2;
-            //        //float2 diffForward = math.dot(diff, myForward2) * myForward2;
-            //        //float2 diffSide = diff - diffForward;
-
-            //        float3 avoidAngle = new float3(diff.x, translation.Value.y, diff.y);
-
-            //        steer.priorityAxis = math.cross(avoidAngle, myForward3);
-            //        steer.priorityAxis = (math.length(steer.priorityAxis) > 0) ? math.normalize(steer.priorityAxis) : new float3(0, 1, 0);
-            //        steer.priorityRot = math.PI / 4;
-            //    }
-            //}
-
-
-            //// perform movement
-            //if (noCollision) {
-            //    translation.Value = newCoord;
-            //}
         }).WithDisposeOnCompletion(otherUnits).WithDisposeOnCompletion(otherColliders).WithDisposeOnCompletion(otherEntities).Schedule();
     }
 }

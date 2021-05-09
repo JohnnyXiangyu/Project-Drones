@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Dummy Chase.unity
+    guid: c2be6d7ff9f299a479a6da05adeb8c1d
+  - enabled: 0
     path: Assets/Scenes/ECS Chase.unity
     guid: d36f9129b47f06d4999f7a80a7b10b6c
   m_configObjects: {}
