@@ -53,8 +53,13 @@ public class ForceVectorMovement : SystemBase
             // linear movement
             float actualMovement = vec.linearVel * timeDelta;
             forward = math.mul(rotation.Value, new float3(0, 0, 1));
-
             translation.Value += forward * actualMovement;
+
+            // adjustment movment
+            float3 sideMovement = vec.slides - math.dot(vec.slides, forward) * forward;
+            if (math.length(sideMovement) != 0)
+                sideMovement = math.normalize(sideMovement) * vec.sideVel * timeDelta;
+            translation.Value += sideMovement;
             
         }).Schedule();
     }

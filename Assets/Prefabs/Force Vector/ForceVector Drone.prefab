@@ -63,8 +63,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   linearVel: 10
-  angularVel: 10
+  angularVel: 6
+  sideVel: 2
   direction:
+    x: 0
+    y: 0
+    z: 0
+  slides:
     x: 0
     y: 0
     z: 0

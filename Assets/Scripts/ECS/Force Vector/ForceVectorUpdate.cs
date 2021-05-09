@@ -85,7 +85,8 @@ public class ForceVectorUpdate : SystemBase
             }
 
             // adding the 2 forces together and scale them
-            vec.direction = tractionForce + repulsionForce;
+            vec.direction = tractionForce;
+            vec.slides = repulsionForce;
         })
             .WithDisposeOnCompletion(tarPoses)
             .WithDisposeOnCompletion(tarTags)
