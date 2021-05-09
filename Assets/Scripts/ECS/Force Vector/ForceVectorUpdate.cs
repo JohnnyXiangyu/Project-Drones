@@ -39,6 +39,9 @@ public class ForceVectorUpdate : SystemBase
             }
             if (!found) return;
 
+            // update target direction
+            vec.targetDirection = targetDir;
+
             // calculate base force vector (traction) as traction force towards the range
             float traction = math.length(targetDir);
             traction -= weapon.range - 0.1f;
@@ -85,7 +88,8 @@ public class ForceVectorUpdate : SystemBase
             }
 
             // adding the 2 forces together and scale them
-            vec.direction = tractionForce + repulsionForce;
+            vec.force = tractionForce;
+            vec.slides = repulsionForce;
         })
             .WithDisposeOnCompletion(tarPoses)
             .WithDisposeOnCompletion(tarTags)

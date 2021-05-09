@@ -63,8 +63,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   linearVel: 10
-  angularVel: 10
+  angularVel: 4
+  sideVel: 1
   direction:
+    x: 0
+    y: 0
+    z: 0
+  slides:
     x: 0
     y: 0
     z: 0
@@ -93,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4de09ffdb674244428a7fb541d9295c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 10
+  range: 20
 --- !u!114 &6841964585140817452
 MonoBehaviour:
   m_ObjectHideFlags: 0
