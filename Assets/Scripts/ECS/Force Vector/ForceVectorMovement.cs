@@ -13,18 +13,14 @@ public class ForceVectorMovement : SystemBase
         
         // TODO: execute the movement here
         Entities.ForEach((ref Translation translation, ref Rotation rotation, in ForceVector vec, in LocalToWorld matrix) => {
-            //// zero force vector indicates no need to move
-            //if (vec.direction.Equals(float3.zero)) {
-            //    return;
-            //} 
-
-            if (!vec.direction.Equals(float3.zero)) {
+            // if (!vec.force.Equals(float3.zero)) {
                 // rotation params
                 float finalAngle = 0;
                 float3 finalAxis = new float3(0, 1, 0);
 
                 // compute new angle
-                float3 targetDir = math.normalize(vec.direction);
+                // if currently no force, rotate to the target
+                float3 targetDir = vec.force.Equals(float3.zero) ? math.normalize(vec.targetDirection) : math.normalize(vec.force);
                 float3 forward = math.normalize(math.mul(rotation.Value, new float3(0, 0, 1)));
 
                 float angle = math.acos(math.dot(forward, targetDir));
@@ -53,12 +49,13 @@ public class ForceVectorMovement : SystemBase
 
                 // linear movement: only move when drone is not too far from desired direction
                 if (angle <= 30) {
-                    float actualMovement = math.min(vec.linearVel * timeDelta, math.length(vec.direction));
-                    float3 mov_forward = math.mul(rotation.Value, new float3(0, 0, 1));
-                    translation.Value += mov_forward * actualMovement;
+                    float actualMovement = math.min(vec.linearVel * timeDelta, math.length(vec.force));
+                    forward = math.mul(rotation.Value, new float3(0, 0, 1));
+                    translation.Value += forward * actualMovement;
                 }
-            }
-            else { // side slides: if the drone is not moving forward, adjust side
+            //}
+            //else {                
+                // side slides: if the drone is not moving forward, adjust side
                 float3 mov_forward = math.mul(rotation.Value, new float3(0, 0, 1));
 
                 // adjustment movment
@@ -72,9 +69,9 @@ public class ForceVectorMovement : SystemBase
                 //}
 
                 if (math.length(sideMovement) != 0)
-                    sideMovement = math.normalize(sideMovement) * vec.sideVel * timeDelta;
+                    sideMovement = sideMovement * timeDelta;
                 translation.Value += sideMovement;
-            }
+            //}
 
         }).Schedule();
     }

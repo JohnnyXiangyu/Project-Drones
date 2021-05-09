@@ -11,6 +11,7 @@ public struct ForceVector : IComponentData
     public float angularVel;
     public float sideVel;
 
-    public float3 direction;
+    public float3 force;
+    public float3 targetDirection;
     public float3 slides;
 }
