@@ -33,12 +33,12 @@ public class Gunship : DroneBase {
 
             // check mothership location
             // TODO: maybe change this to a shape cast?
-            if ((transform.position - currentCommand.spawner.GetComponent<DroneDeployer>().RecyclePoint()).magnitude <= 1) {
-                currentCommand.spawner.GetComponent<DroneDeployer>().ReclaimDrone(gameObject);
+            if ((transform.position - currentCommand.spawner.GetComponent<DroneDeployer>().GetRetractPoint()).magnitude <= 1) {
+                currentCommand.spawner.GetComponent<DroneDeployer>().RetractDrone(gameObject);
             }
 
             // move back to mothership
-            myAgent.SetDestination(currentCommand.spawner.GetComponent<DroneDeployer>().RecyclePoint());
+            myAgent.SetDestination(currentCommand.spawner.GetComponent<DroneDeployer>().GetRetractPoint());
         }
         else if (distance > attackRange) {
             // tell agent to move to the target

@@ -8,6 +8,10 @@ using UnityEngine;
 /// </summary>
 public abstract class DroneBase : MonoBehaviour
 {
+    // for type identification
+    public GameObject modelPrefab;
+
+    // drone state
     protected Command currentCommand;
     public bool activated = false;
     
