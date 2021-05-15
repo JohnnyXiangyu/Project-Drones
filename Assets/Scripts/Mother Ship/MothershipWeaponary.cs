@@ -7,11 +7,21 @@ using UnityEngine;
 /// Both drone deployer and weapons are abstracted as IFireable.
 /// </summary>
 public class MothershipWeaponary : MonoBehaviour {
-    [SerializeField]
-    GameObject deployPoint;
-
     int currentWeapon = 0;
-    List<FirableBase> weapons = new List<FirableBase>();
+    [SerializeField]
+    List<FirableBase> weapons;
+
+    private void Start() {
+        // enable default weapon
+        if (weapons.Count > 0) {
+            weapons[0].Enable();
+        }
+
+        // disable other weapons
+        for (int i = 1; i < weapons.Count; i ++) {
+            weapons[i].Disable();
+        }
+    }
 
     private void Update() {
         int oldWeapon = 0;

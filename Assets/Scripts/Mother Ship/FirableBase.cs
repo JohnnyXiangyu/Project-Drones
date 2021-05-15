@@ -19,6 +19,11 @@ public abstract class FirableBase : MonoBehaviour {
                     GameObject obj = hit.collider.gameObject;
 
                     PrimaryFire(point, obj);
+
+                    Debug.Log("Weapon System: primary fire activated to " + hit.point.ToString());
+                }
+                else {
+                    Debug.Log("Weapon System: primary fire failed to get target");
                 }
             }
             else if (Input.GetMouseButtonDown(1)) {

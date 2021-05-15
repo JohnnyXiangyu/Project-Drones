@@ -8,13 +8,14 @@ using UnityEngine;
 /// </summary>
 public abstract class DroneBase : MonoBehaviour
 {
-    Command currentCommand;
+    protected Command currentCommand;
+    public bool activated = false;
     
     /// <summary>
     /// Take the drone back to inventory.
     /// </summary>
     public void Retract() {
-        gameObject.SetActive(false);
+        activated = false;
     }
 
     /// <summary>
@@ -24,10 +25,13 @@ public abstract class DroneBase : MonoBehaviour
     /// <param name="newCommand">the command to execute</param>
     public virtual void Deploy(Command newCommand) {
         currentCommand = newCommand;
-        gameObject.SetActive(true);
+        activated = true;
     }
 
     private void Update() {
+        if (!activated)
+            return;
+
         switch (currentCommand.type) {
             case Command.CommandType.CHASE: 
                 ChaseUpdate();
