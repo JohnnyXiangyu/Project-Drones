@@ -134,4 +134,4 @@ MonoBehaviour:
   activated: 0
   attackRange: 10
   avoidRange: 5
-  maxMovement: 100
+  maxMovement: 50

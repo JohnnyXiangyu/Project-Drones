@@ -9,7 +9,7 @@ public class Command
     /// <summary>
     /// Mothership of this drone.
     /// </summary>
-    public GameObject motherShip;
+    public GameObject spawner;
     
     /// <summary>
     /// Position of the click.

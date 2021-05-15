@@ -29,7 +29,16 @@ public class Gunship : DroneBase {
         // gunship chases the target and try to shoot
         float distance = (transform.position - currentCommand.clickedObj.transform.position).magnitude;
         if (remainingMovement <= 0) {
-            // TODO: move back to mothership
+            myAgent.stoppingDistance = 0;
+
+            // check mothership location
+            // TODO: maybe change this to a shape cast?
+            if ((transform.position - currentCommand.spawner.GetComponent<DroneDeployer>().RecyclePoint()).magnitude <= 1) {
+                currentCommand.spawner.GetComponent<DroneDeployer>().ReclaimDrone(gameObject);
+            }
+
+            // move back to mothership
+            myAgent.SetDestination(currentCommand.spawner.GetComponent<DroneDeployer>().RecyclePoint());
         }
         else if (distance > attackRange) {
             // tell agent to move to the target

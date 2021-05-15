@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DroneDeployer : FirableBase {
-    // settings
+    // key binding
     [SerializeField]
     KeyCode makeKey = KeyCode.Space;
+
+    // location settings
     [SerializeField]
     Transform spawnPoint;
+    [SerializeField]
+    Transform recyclePoint;
 
+    // inventory system
     int currentDrone = 0;
     [SerializeField]
-    List<GameObject> dronePrefabs/* = new List<GameObject>()*/;
+    List<GameObject> dronePrefabs;
     List<List<GameObject>> droneInstances = new List<List<GameObject>>();
 
     private void Start() {
@@ -20,7 +25,6 @@ public class DroneDeployer : FirableBase {
             droneInstances.Add(new List<GameObject>());
         }
     }
-
 
     protected override void Update() {
         // switch drone slot
@@ -47,7 +51,7 @@ public class DroneDeployer : FirableBase {
             Command newCommand = new Command();
             newCommand.clickedObj = obj;
             newCommand.position = point;
-            newCommand.motherShip = gameObject;
+            newCommand.spawner = gameObject;
 
             if (obj.GetComponent<AttackableBase>() != null) {
                 newCommand.type = Command.CommandType.CHASE;
@@ -85,6 +89,22 @@ public class DroneDeployer : FirableBase {
         //    newDeploy.GetComponent<DroneBase>().Deploy(newCommand);
         //    newDeploy.transform.position = spawnPoint.position;
         //}
+    }
+
+    // message from drones /////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Take the drone back. Should be called from a drone
+    /// </summary>
+    /// <param name="drone">the drone object to be taken back</param>
+    public void ReclaimDrone(GameObject drone) {
+        drone.GetComponent<DroneBase>().Retract();
+        drone.SetActive(false);
+        
+        // TODO: figure out what's the type of this drone
+    }
+
+    public Vector3 RecyclePoint() {
+        return recyclePoint.position;
     }
 
     // debug functions /////////////////////////////////////////////////////////////////////////
