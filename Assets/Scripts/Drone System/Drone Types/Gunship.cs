@@ -5,30 +5,59 @@ using UnityEngine.AI;
 
 public class Gunship : DroneBase {
     [SerializeField]
-    float attackRange;
-    [SerializeField]
     float avoidRange;
     [SerializeField]
     float maxMovement; // fuel limitation
-
+    
+    float attackRange;
+    
     // fuel management
     float remainingMovement;
-    Vector3 positionLastFrame; // TODO: make sure this value is initialized properly on initialization
+    Vector3 positionLastFrame;
+
+    // resource management
+    bool running = true;
 
     NavMeshAgent myAgent;
 
+    // message from owner //////////////////////////////////////////////////////////////////////////////////
     public override void Deploy(Command newCommand) {
         base.Deploy(newCommand);
 
+        running = true;
+
+        // update information from weapon system
+        attackRange = GetComponent<DroneCanon>().range;
+
+        // initialze fuel system
+        // TODO: refactor this to a separate component
         positionLastFrame = transform.position;
         remainingMovement = maxMovement;
         myAgent = gameObject.GetComponent<NavMeshAgent>();
+
+        // configure weapon system
+        if (newCommand.type == Command.CommandType.CHASE) {
+            GetComponent<DroneCanon>().SetTarget(newCommand.clickedObj);
+            GetComponent<DroneCanon>().Reload();
+        }
     }
 
+    public override void Retract() {
+        GetComponent<DroneCanon>().SetTarget(null);
+    }
+
+
+    // message from component //////////////////////////////////////////////////////////////////////////////
+    public override void ReportDepletion() {
+        running = false;
+    }
+
+
+    // drone Ai ////////////////////////////////////////////////////////////////////////////////////////////
     protected override void ChaseUpdate() {
         // gunship chases the target and try to shoot
         float distance = (transform.position - currentCommand.clickedObj.transform.position).magnitude;
-        if (remainingMovement <= 0) {
+        if (remainingMovement <= 0 || running == false) {
             myAgent.stoppingDistance = 0;
 
             // check mothership location

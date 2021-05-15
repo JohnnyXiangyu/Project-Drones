@@ -5,13 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/Dummy Chase.unity
-    guid: c2be6d7ff9f299a479a6da05adeb8c1d
-  - enabled: 0
-    path: Assets/Scenes/ECS Chase.unity
-    guid: d36f9129b47f06d4999f7a80a7b10b6c
   - enabled: 1
-    path: Assets/Scenes/Force Vector.unity
-    guid: c75b093aa855f9f4b93aa4b2b97ee7b6
+    path: Assets/Scenes/Concept Demo.unity
+    guid: 9e02a1213cf879a43bbc2607851af7ac
   m_configObjects: {}

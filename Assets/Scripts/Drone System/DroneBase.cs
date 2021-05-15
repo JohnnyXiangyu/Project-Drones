@@ -18,7 +18,7 @@ public abstract class DroneBase : MonoBehaviour
     /// <summary>
     /// Take the drone back to inventory.
     /// </summary>
-    public void Retract() {
+    public virtual void Retract() {
         activated = false;
     }
 
@@ -63,4 +63,8 @@ public abstract class DroneBase : MonoBehaviour
     /// The behavior of invade command.
     /// </summary>
     protected abstract void InvadeUpdate();
+
+
+    // message from drone components ///////////////////////////////////////////////
+    public abstract void ReportDepletion();
 }
