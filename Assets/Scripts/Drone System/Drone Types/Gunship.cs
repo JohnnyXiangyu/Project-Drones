@@ -65,9 +65,10 @@ public class Gunship : DroneBase {
             if ((transform.position - currentCommand.spawner.GetComponent<DroneDeployer>().GetRetractPoint()).magnitude <= 1) {
                 currentCommand.spawner.GetComponent<DroneDeployer>().RetractDrone(gameObject);
             }
-
-            // move back to mothership
-            myAgent.SetDestination(currentCommand.spawner.GetComponent<DroneDeployer>().GetRetractPoint());
+            else {
+                // move back to mothership
+                myAgent.SetDestination(currentCommand.spawner.GetComponent<DroneDeployer>().GetRetractPoint());
+            }
         }
         else if (distance > attackRange) {
             // tell agent to move to the target

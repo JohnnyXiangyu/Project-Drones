@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public abstract class FirableBase : MonoBehaviour {
     bool weaponEnabled = false;
@@ -9,6 +10,8 @@ public abstract class FirableBase : MonoBehaviour {
         if (weaponEnabled) {
             // handle clicking
             if (Input.GetMouseButtonDown(0)) {
+                if (EventSystem.current.IsPointerOverGameObject()) return;
+
                 Camera cam = CameraRegister.cam;
 
                 Ray ray = cam.ScreenPointToRay(Input.mousePosition);
