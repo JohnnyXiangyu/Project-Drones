@@ -15,16 +15,11 @@ public class Gunship : DroneBase {
     float remainingMovement;
     Vector3 positionLastFrame;
 
-    // resource management
-    bool running = true;
-
     NavMeshAgent myAgent;
 
     // message from owner //////////////////////////////////////////////////////////////////////////////////
     public override void Deploy(Command newCommand) {
         base.Deploy(newCommand);
-
-        running = true;
 
         // update information from weapon system
         attackRange = GetComponent<DroneCanon>().range;
@@ -47,28 +42,12 @@ public class Gunship : DroneBase {
     }
 
 
-    // message from component //////////////////////////////////////////////////////////////////////////////
-    public override void ReportDepletion() {
-        running = false;
-    }
-
-
     // drone Ai ////////////////////////////////////////////////////////////////////////////////////////////
     protected override void ChaseUpdate() {
         // gunship chases the target and try to shoot
         float distance = (transform.position - currentCommand.clickedObj.transform.position).magnitude;
-        if (remainingMovement <= 0 || running == false) {
-            myAgent.stoppingDistance = 0;
-
-            // check mothership location
-            // TODO: maybe change this to a shape cast?
-            if ((transform.position - currentCommand.spawner.GetComponent<DroneDeployer>().GetRetractPoint()).magnitude <= 1) {
-                currentCommand.spawner.GetComponent<DroneDeployer>().RetractDrone(gameObject);
-            }
-            else {
-                // move back to mothership
-                myAgent.SetDestination(currentCommand.spawner.GetComponent<DroneDeployer>().GetRetractPoint());
-            }
+        if (remainingMovement <= 0) {
+            ReportDepletion();
         }
         else if (distance > attackRange) {
             // tell agent to move to the target
@@ -83,10 +62,25 @@ public class Gunship : DroneBase {
     }
 
     protected override void InvadeUpdate() {
+        // TODO: 
         throw new System.NotImplementedException();
     }
 
     protected override void SecureUpdate() {
         throw new System.NotImplementedException();
+    }
+
+    protected override void ReturnUpdate() {
+        myAgent.stoppingDistance = 0;
+
+        // check mothership location
+        // TODO: maybe change this to a shape cast?
+        if ((transform.position - currentCommand.spawner.GetComponent<DroneDeployer>().GetRetractPoint()).magnitude <= 1) {
+            currentCommand.spawner.GetComponent<DroneDeployer>().RetractDrone(gameObject);
+        }
+        else {
+            // move back to mothership
+            myAgent.SetDestination(currentCommand.spawner.GetComponent<DroneDeployer>().GetRetractPoint());
+        }
     }
 }

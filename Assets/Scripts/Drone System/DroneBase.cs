@@ -14,6 +14,7 @@ public abstract class DroneBase : MonoBehaviour
     // drone state
     protected Command currentCommand;
     public bool activated = false;
+    protected bool depleted = false;
     
     /// <summary>
     /// Take the drone back to inventory.
@@ -30,22 +31,28 @@ public abstract class DroneBase : MonoBehaviour
     public virtual void Deploy(Command newCommand) {
         currentCommand = newCommand;
         activated = true;
+        depleted = false;
     }
 
     private void Update() {
         if (!activated)
             return;
 
-        switch (currentCommand.type) {
-            case Command.CommandType.CHASE: 
-                ChaseUpdate();
-                break;
-            case Command.CommandType.INVADE:
-                InvadeUpdate();
-                break;
-            case Command.CommandType.SECURE:
-                SecureUpdate();
-                break;
+        if (depleted) {
+            ReturnUpdate();
+        }
+        else {
+            switch (currentCommand.type) {
+                case Command.CommandType.CHASE:
+                    ChaseUpdate();
+                    break;
+                case Command.CommandType.INVADE:
+                    InvadeUpdate();
+                    break;
+                case Command.CommandType.SECURE:
+                    SecureUpdate();
+                    break;
+            }
         }
     }
 
@@ -64,7 +71,14 @@ public abstract class DroneBase : MonoBehaviour
     /// </summary>
     protected abstract void InvadeUpdate();
 
+    /// <summary>
+    /// Moving back to mothership.
+    /// </summary>
+    protected abstract void ReturnUpdate();
+
 
     // message from drone components ///////////////////////////////////////////////
-    public abstract void ReportDepletion();
+    public virtual void ReportDepletion() {
+        depleted = true;
+    }
 }
