@@ -134,8 +134,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelPrefab: {fileID: 0}
   activated: 0
-  avoidRange: 5
   maxMovement: 50
+  positionErrorBound: 1
+  maxLostSeconds: 0.5
 --- !u!114 &188957238694308761
 MonoBehaviour:
   m_ObjectHideFlags: 0

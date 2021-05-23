@@ -26,6 +26,10 @@ public class DroneCanon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (target == null) {
+            return;
+        }
+        
         if (ammo <= 0) {
             GetComponent<DroneBase>().ReportDepletion();
         }

@@ -4,10 +4,21 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public class Gunship : DroneBase {
-    [SerializeField]
-    float avoidRange;
+    /// <summary>
+    /// distance this drone can travel per deployment
+    /// </summary>
     [SerializeField]
     float maxMovement; // fuel limitation
+    /// <summary>
+    /// radius around click position for drone to tell arrival
+    /// </summary>
+    [SerializeField]
+    float positionErrorBound;
+    /// <summary>
+    /// times the drone will try to chase target before it gives up (used in invasion and secure)
+    /// </summary>
+    [SerializeField]
+    float maxLostSeconds;
     
     float attackRange;
     
@@ -16,6 +27,21 @@ public class Gunship : DroneBase {
     Vector3 positionLastFrame;
 
     NavMeshAgent myAgent;
+
+    // invasion utility
+    struct TempTarget {
+        public GameObject target;
+        public float lostTime;
+        public bool activated;
+    }
+
+    /// <summary>
+    /// the temporary target for invasion and secure
+    /// </summary>
+    TempTarget tempTarget = new TempTarget() { activated = false };
+
+    // used for invasion only
+    bool returning = false;
 
     // message from owner //////////////////////////////////////////////////////////////////////////////////
     public override void Deploy(Command newCommand) {
@@ -35,6 +61,10 @@ public class Gunship : DroneBase {
             GetComponent<DroneCanon>().SetTarget(newCommand.clickedObj);
             GetComponent<DroneCanon>().Reload();
         }
+        else if (newCommand.type == Command.CommandType.INVADE) {
+            returning = false;
+            tempTarget.activated = false;
+        }
     }
 
     public override void Retract() {
@@ -45,7 +75,7 @@ public class Gunship : DroneBase {
     // drone Ai ////////////////////////////////////////////////////////////////////////////////////////////
     protected override void ChaseUpdate() {
         // gunship chases the target and try to shoot
-        float distance = (transform.position - currentCommand.clickedObj.transform.position).magnitude;
+        float distance = GetDistanceFromTargetObj();
         if (remainingMovement <= 0) {
             ReportDepletion();
         }
@@ -62,8 +92,37 @@ public class Gunship : DroneBase {
     }
 
     protected override void InvadeUpdate() {
-        // TODO: 
-        throw new System.NotImplementedException();
+        if (!TemporaryChase()) {
+            // if the target is lost: attempt to move to desitination
+            float distance = GetDistanceFromTargetPos();
+            myAgent.SetDestination(currentCommand.position);
+            myAgent.stoppingDistance = 0;
+
+            // if arrived, return to mothership
+            if (distance <= positionErrorBound) {
+                ReportDepletion();
+            }
+
+            // search for enemy
+            Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
+
+            // find closest target
+            float closestDistance = float.MaxValue;
+            GameObject closestObj = null;
+            foreach (Collider cd in hits) {
+                if (Vector3.Distance(cd.transform.position, transform.position) < closestDistance && cd.GetComponent<AttackableBase>() != null) {
+                    closestObj = cd.gameObject;
+                    closestDistance = Vector3.Distance(cd.transform.position, transform.position);
+                }
+            }
+
+            // update temporary target
+            if (closestObj) {
+                tempTarget.activated = true;
+                tempTarget.lostTime = maxLostSeconds;
+                tempTarget.target = closestObj;
+            }
+        }
     }
 
     protected override void SecureUpdate() {
@@ -82,5 +141,43 @@ public class Gunship : DroneBase {
             // move back to mothership
             myAgent.SetDestination(currentCommand.spawner.GetComponent<DroneDeployer>().GetRetractPoint());
         }
+    }
+
+    /// <summary>
+    /// The internal action of chasing a temporary target, with the possibility of 
+    /// </summary>
+    /// <returns></returns>
+    private bool TemporaryChase() {
+        if (!tempTarget.activated || tempTarget.lostTime > maxLostSeconds) {
+            tempTarget.activated = false;
+
+            // cancel aim
+            GetComponent<DroneCanon>().SetTarget(null);
+
+            return false;
+        }
+        else {
+            // check lost status
+            if (Vector3.Distance(tempTarget.target.transform.position, transform.position) > attackRange) {
+                tempTarget.lostTime += Time.deltaTime;
+            }
+
+            // move to target
+            myAgent.SetDestination(tempTarget.target.transform.position);
+            myAgent.stoppingDistance = attackRange;
+
+            // aim
+            GetComponent<DroneCanon>().SetTarget(tempTarget.target);
+
+            return true;
+        }
+    }
+
+    private float GetDistanceFromTargetObj() {
+        return (transform.position - currentCommand.clickedObj.transform.position).magnitude;
+    }
+
+    private float GetDistanceFromTargetPos() {
+        return (transform.position - currentCommand.position).magnitude;
     }
 }
